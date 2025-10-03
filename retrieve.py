@@ -2,7 +2,7 @@ import argparse
 import os
 import pandas as pd
 from utils import restriction_prompt, query, get_code_with_markdown, find_context, lines_eq_start, lines_eq_end, rm_none_line
-from fp_utils import build_cfp, collect_all_function_call_names, collect_all_function_def_names, anchor, tokenize_c_code
+from cfp_utils import build_cfp, collect_all_function_call_names, collect_all_function_def_names, anchor, tokenize_c_code
 
 
 def get_new_block(part_old, code_new, name_list=[], range_anchor=[], llm='gpt-4-turbo', tmp_query_time=None, method='miggpt', m=3):
