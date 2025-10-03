@@ -1,7 +1,7 @@
 import argparse
 import pandas as pd
 from utils import restriction_prompt, query, get_code_with_markdown
-from fp_utils import build_cfp, get_diff_part
+from cfp_utils import build_cfp, get_diff_part
 
 
 def migration(part_old, part_old_patched, part_new, context, llm='gpt-4-turbo', method='miggpt'):
