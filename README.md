@@ -21,14 +21,14 @@ openai.api_key = "your key"
 ```
 
 ## Benchmark
-The benchmark file is located at `data/data.csv` and contains 80 Type 1 samples and 55 Type 2 samples. The specific content of each item is as follows:
+The benchmark file, located at `data/data.csv`, contains 80 Type 1 samples and 55 Type 2 samples. The specific content of each item is as follows:
 ```
 'type',             # Type of migration sample, "type1" or "type2"
 's_old',            # Old code snippet
 's_old_p',          # Patched old code snippet
 'file_new',         # New version file
 's_new_gt1',        # Correct result for the new code snippet on retrieval task
-'s_new_gt2',        # Additional correct result for the new code snippet on retrieval task
+'s_new_gt2',        # Additional correct result for the new code snippet on the retrieval task
 's_new_p_gt1',      # Correct result for patched new code snippet on migration task
 's_new_p_gt2'       # Additional correct result for patched new code snippet on migration task
 ```
@@ -38,7 +38,7 @@ The benchmark file is located at `data/data.csv` and contains 80 Type 1 samples 
 ```
 python retrieve.py --llm gpt-4-turbo --method miggpt
 ```
-2. Migrate the new code snippet to patched new code snippet.
+2. Migrate the new code snippet to the patched new code snippet.
 ```
 python migrate.py --llm gpt-4-turbo --method miggpt
 ```
