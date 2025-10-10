@@ -1,6 +1,8 @@
 # MigGPT
 Official implementation of the paper "MigGPT: Harnessing Large Language Models for Automated Migration of Out-of-Tree Linux Kernel Patches Across Versions" (NeurIPS 2025 spotlight)
 
+arXiv: https://arxiv.org/abs/2504.09474v3
+
 
 ## Abstract
 Out-of-tree kernel patches are essential for adapting the Linux kernel to new hardware or enabling specific functionalities. Maintaining and updating these patches across different kernel versions demands significant effort from experienced engineers. Large language models (LLMs) have shown remarkable progress across various domains, suggesting their potential for automating out-of-tree kernel patch migration. 
