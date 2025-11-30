@@ -107073,7 +107073,74 @@ free_pt:
 fail_nomem:
 	return NULL;
 }
-","static int copy_mm(unsigned long clone_flags, struct task_struct *tsk)
+
+static int copy_mm(unsigned long clone_flags, struct task_struct *tsk)
+{
+	struct mm_struct *mm, *oldmm;
+
+	tsk->min_flt = tsk->maj_flt = 0;
+	tsk->nvcsw = tsk->nivcsw = 0;
+#ifdef CONFIG_DETECT_HUNG_TASK
+	tsk->last_switch_count = tsk->nvcsw + tsk->nivcsw;
+	tsk->last_switch_time = 0;
+#endif
+
+	tsk->mm = NULL;
+	tsk->active_mm = NULL;
+
+	/*
+	 * Are we cloning a kernel thread?
+	 *
+	 * We need to steal a active VM for that..
+	 */
+	oldmm = current->mm;
+	if (!oldmm)
+		return 0;
+
+	/*
+	 * For single-thread processes, rss_stat is in atomic mode, which
+	 * reduces the memory consumption and performance regression caused by
+	 * using percpu. For multiple-thread processes, rss_stat is switched to
+	 * the percpu mode to reduce the error margin.
+	 */
+	if (clone_flags & CLONE_THREAD)
+		if (mm_counter_switch_to_pcpu(oldmm))
+			return -ENOMEM;
+
+	if (clone_flags & CLONE_VM) {
+		mmget(oldmm);
+		mm = oldmm;
+	} else {
+		mm = dup_mm(tsk, current->mm);
+		if (!mm)
+			return -ENOMEM;
+	}
+
+	tsk->mm = mm;
+	tsk->active_mm = mm;
+	sched_mm_cid_fork(tsk);
+	return 0;
+}
+
+static int copy_fs(unsigned long clone_flags, struct task_struct *tsk)
+{
+	struct fs_struct *fs = current->fs;
+	if (clone_flags & CLONE_FS) {
+		/* tsk->fs is already what we want */
+		spin_lock(&fs->lock);
+		if (fs->in_exec) {
+			spin_unlock(&fs->lock);
+			return -EAGAIN;
+		}
+		fs->users++;
+		spin_unlock(&fs->lock);
+		return 0;
+	}
+	tsk->fs = copy_fs_struct(fs);
+	if (!tsk->fs)
+		return -ENOMEM;
+	return 0;
+}","static int copy_mm(unsigned long clone_flags, struct task_struct *tsk)
 {
 	struct mm_struct *mm, *oldmm;
 
